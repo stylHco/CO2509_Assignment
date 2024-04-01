@@ -1,12 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'Page1.dart';
-import 'Page2.dart';
-import 'Page3.dart';
-import 'Page4.dart';
-import 'Page5.dart';
-import 'api-call.dart';
+import 'firebase_options.dart';
+import 'homePage.dart';
+import 'moviesPage.dart';
+import 'tvSeriesPage.dart';
+import 'profilePage.dart';
+import 'listsPage.dart';
+import 'apiServices.dart';
 
-void main() {
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    print("Error initializing Firebase: $e");
+  }
   runApp(const MyApp());
 
 }
@@ -30,16 +42,16 @@ class MainApplication extends StatefulWidget {
   const MainApplication({super.key});
 
   @override
-  _MainApplication createState() => _MainApplication();
+  _MainApplicationState createState() => _MainApplicationState();
 }
 
-class _MyHomePag_MainApplicationState extends State<MyHomePage> {
+class _MainApplicationState extends State<MainApplication> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
     const HomePage(),
-    SearchPage(),
     MoviesPage(),
-    TVSeriesPage(),
+    TvSeriesPage(),
+    ListsPage(),
     ProfilePage(),
   ];
 
@@ -59,9 +71,9 @@ class _MyHomePag_MainApplicationState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.lightGreen,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.black,
+        selectedItemColor: Colors.tealAccent,
+        unselectedItemColor: Colors.grey[300],
+        backgroundColor: Colors.teal,
         elevation: 10,
         selectedFontSize: 14,
         unselectedFontSize: 12,
@@ -73,15 +85,15 @@ class _MyHomePag_MainApplicationState extends State<MyHomePage> {
             label: 'HOME',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favourites),
+            icon: Icon(Icons.movie_sharp),
             label: 'MOVIES',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.tv_sharp),
             label: 'TV-SERIES',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.list),
             label: 'LISTS',
           ),
           BottomNavigationBarItem(

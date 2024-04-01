@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "331856315594",
+    "firebase_url": "https://movieslist-38147-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "movieslist-38147",
+    "storage_bucket": "movieslist-38147.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331856315594:android:c78f74cf2154a3d3a82033",
+        "android_client_info": {
+          "package_name": "com.example.co2509_assignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0YCjSuOtjF3zlqUbMk47Ux0B-uCrz-Zc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

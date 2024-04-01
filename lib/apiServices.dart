@@ -1,16 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'constands.dart';
 
 
 class ApiService {
-  //static const String apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjAwMDFjNGM1MzZlMjlmMzBhNmExNDBlYWUzOTEwNSIsInN1YiI6IjY1YjExYjNmZGQ5MjZhMDE1MjRkMDMzZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ICnU5fWhhlyM9OSZFr_H4S73J2M_W-Y7gd5K62GC3tM';
 
-
-  static Future<List<dynamic>> fetchData(String apiUrl) async {
-    //var headers = {
-      //'accept': 'application/json',
-      //'Authorization': 'Bearer $apiKey',
-    //};
+  static Future<List<dynamic>> fetchListOfData(String apiUrl) async {
 
     var url = Uri.parse(apiUrl);
 
