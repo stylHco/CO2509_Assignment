@@ -212,7 +212,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                                     ), // Circle shape
                                   ),
                                   onPressed: (){
-                                     print("predef");
+                                    ShowLists(context,type);
                                   },
                                   child: Icon(
                                     Icons.add
@@ -274,4 +274,53 @@ class MoreInfoPageState extends State<MoreInfoPage> {
   }
 
 
+}
+
+
+// build the modal to add the lists to the firebase
+
+void ShowLists(BuildContext context, String listType) {
+  showDialog(
+      context: context,
+      builder: (_)
+      {
+        return AlertDialog(
+          title: const Text('Add it to a list'),
+          content:
+              Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: (){
+                        print("pressed");
+                      },
+                      child: const Text('Add to Favorites'),
+                    ),
+                      TextButton(
+                      onPressed: (){
+                        print("pressed");
+                      },
+                      child: const Text('Add to Watched'),
+                    ),
+                    TextButton(
+                      onPressed: (){
+                        print("pressed");
+                      },
+                      child: const Text('Add to plan to Watched'),
+                    ),
+                  ],
+                ),
+              ),
+          actions: [
+            TextButton(
+              onPressed: Navigator
+                  .of(context)
+                  .pop,
+              child: const Text('OK'),
+            )
+          ],
+        );
+      }
+  );
 }

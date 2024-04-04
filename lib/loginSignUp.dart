@@ -131,10 +131,10 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   String _email = '';
   String _password = '';
+  String _name = '';
   String _repeatPassword = '';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FirebaseAuth auth = FirebaseAuth.instance;
-
 
   @override
   Widget build(BuildContext context) {
@@ -152,147 +152,232 @@ class _SignUpFormState extends State<SignUpForm> {
                   )
               ),
               Center(
-                child: Column(
-                  // make the height of the container to be adjusted based on the content
-                    mainAxisSize: MainAxisSize.min,
-                    children:[
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 30),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.tealAccent
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(top: 30),
-                                  child: Text(
-                                    "SIGN UP",
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold
+                child: SingleChildScrollView(
+                  child: Column(
+                    // make the height of the container to be adjusted based on the content
+                      mainAxisSize: MainAxisSize.min,
+                      children:[
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 30),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Colors.tealAccent
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(top: 30),
+                                    child: Text(
+                                      "SIGN UP",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      TextFormField(
-                                        keyboardType: TextInputType.emailAddress,
-                                        decoration: InputDecoration(
-                                          labelText: 'Email',
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        TextFormField(
+                                          keyboardType: TextInputType.emailAddress,
+                                          decoration: InputDecoration(
+                                            labelText: 'Email',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Enter an email';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _email = value!;
+                                          },
                                         ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Enter an email';
-                                          }
-                                          return null;
-                                        },
-                                        onSaved: (value) {
-                                          _email = value!;
-                                        },
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      TextFormField(
-                                        obscureText: true,
-                                        decoration: InputDecoration(
-                                          labelText: 'Password',
+                                        SizedBox(height: 20.0),
+                                        TextFormField(
+                                          keyboardType: TextInputType.text,
+                                          decoration: InputDecoration(
+                                            labelText: 'Name',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Enter a name';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _name = value!;
+                                          },
                                         ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Enter a password';
-                                          }
-                                          return null;
-                                        },
-                                        onSaved: (value) {
-                                          _password = value!;
-                                        },
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      TextFormField(
-                                        obscureText: true,
-                                        decoration: InputDecoration(
-                                          labelText: 'Repeat Password',
+                                        SizedBox(height: 20.0),
+                                        TextFormField(
+                                          obscureText: true,
+                                          decoration: InputDecoration(
+                                            labelText: 'Password',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Enter a password';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _password = value!;
+                                          },
                                         ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Repeat the password';
-                                          }
-                                          // else if (value != _password) {
-                                          //   return 'Passwords do not match';
-                                          // }
-                                          return null;
-                                        },
-                                        onSaved: (value) {
-                                          _repeatPassword = value!;
-                                        },
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          height: 50,
-                                          margin: EdgeInsets.symmetric(horizontal: 30),
-                                          padding: EdgeInsets.only(top: 20),
-                                          child:
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(50.0),
-                                                        side: BorderSide(color: Colors.red)
-                                                    )
-                                                )),
-                                            onPressed: () {
-                                              // check if the values are valid and only then save the form,
-                                              if (_formKey.currentState!.validate()) {
-                                                _formKey.currentState!.save();
-                                                // createUserWithEmailPassword(_password,_email);
-                                                auth.createUserWithEmailAndPassword(email: _email, password: _password);
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (_)
-                                                    {
-                                                      return AlertDialog(
-                                                        title: const Text('SIGN UP'),
-                                                        content: const Text('You successfully created an account'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: Navigator
-                                                                .of(context)
-                                                                .pop,
-                                                            child: const Text('OK'),
-                                                          )
-                                                        ],
+                                        SizedBox(height: 20.0),
+                                        TextFormField(
+                                          obscureText: true,
+                                          decoration: InputDecoration(
+                                            labelText: 'Repeat Password',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Repeat the password';
+                                            }
+
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _repeatPassword = value!;
+                                          },
+                                        ),
+                                        SizedBox(height: 20.0),
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 50,
+                                            margin: EdgeInsets.symmetric(horizontal: 30),
+                                            padding: EdgeInsets.only(top: 20),
+                                            child:
+                                            ElevatedButton(
+                                              style: ButtonStyle(
+                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(50.0),
+                                                          side: BorderSide(color: Colors.red)
+                                                      )
+                                                  )),
+                                              onPressed: () async {
+                                                // check if the values are valid and only then save the form,
+                                                if (_formKey.currentState!.validate()) {
+                                                  _formKey.currentState!.save();
+
+                                                  // check if password is not the same as the repeat password
+                                                  if(_password != _repeatPassword){
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (_){
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'ERROR on Password'),
+                                                            content: const Text(
+                                                                'The passwords does not much. Try again'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: Navigator
+                                                                    .of(context)
+                                                                    .pop,
+                                                                child: const Text(
+                                                                    'OK'),
+                                                              )
+                                                            ],
+                                                          );
+                                                        }
+                                                    );
+                                                  }
+                                                  else {
+
+                                                    try {
+
+                                                      await auth.createUserWithEmailAndPassword(
+                                                        email: _email,
+                                                        password: _password,
+                                                      );
+
+                                                      DatabaseReference ref = FirebaseDatabase.instance.ref("users");
+
+                                                      await ref.set({
+                                                        auth.currentUser?.uid:{
+                                                          "name": _name
+                                                        }
+                                                      }).then((_){
+
+                                                        if (!mounted) return;
+                                                        // go back so can redirect to the home page
+                                                        Navigator.of(context).pop();
+
+                                                      // show this if everything is works as expected
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (_) {
+                                                              return AlertDialog(
+                                                                title: const Text(
+                                                                    'SIGN UP'),
+                                                                content: const Text(
+                                                                    'You successfully created an account'),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed: Navigator
+                                                                        .of(context)
+                                                                        .pop,
+                                                                    child: const Text(
+                                                                        'CLOSE'),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            }
+                                                        );
+                                                      });
+
+
+                                                    } catch (error) {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (_) {
+                                                          return AlertDialog(
+                                                            title: const Text('SIGN UP ERROR'),
+                                                            content: Text('ERROR: $error'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text('CLOSE'),
+                                                              )
+                                                            ],
+                                                          );
+                                                        },
                                                       );
                                                     }
-                                                );
-                                                auth.signInWithEmailAndPassword(email: _email, password: _password);
-                                              }
-                                            },
-                                            child: Text(
-                                              'Submit',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold
+
+                                                    }
+                                                  }
+                                              },
+                                              child: Text(
+                                                'SIGN UP',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ]
+                                ]
+                            ),
                           ),
                         ),
-                      ),
-                    ]
+                      ]
+                  ),
                 ),
               ),
             ]
@@ -408,15 +493,49 @@ class _LoginFormState extends State<LoginForm> {
                                                   side: BorderSide(color: Colors.red)
                                               )
                                           )),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         // check if the values are valid and only then save the form,
                                         if (_formKey.currentState!.validate()) {
                                           _formKey.currentState!.save();
-                                          auth.signInWithEmailAndPassword(email: _email, password: _password);
+
+                                          try {
+
+                                            await auth.signInWithEmailAndPassword(
+                                              email: _email,
+                                              password: _password,
+                                            ).then((_){
+                                              if (!mounted) return;
+
+                                              // go back so can redirect to the home page
+                                              Navigator.of(context).pop();
+                                            });
+
+
+                                          } catch (error) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                return AlertDialog(
+                                                  title: const Text('SIGN IN ERROR'),
+                                                  content: Text('ERROR: $error'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: const Text('CLOSE'),
+                                                    )
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
+
                                         }
+
                                       },
                                       child: Text(
-                                          'Submit',
+                                          'LOGIN',
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold
@@ -443,163 +562,19 @@ class _LoginFormState extends State<LoginForm> {
 
 
 
-class formBody extends StatelessWidget{
 
-  String _email = '';
-  String _password = '';
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body:
-        Stack(
-          children: <Widget> [
-            Positioned.fill(
-                child: Image.asset(
-                  movieImageUrl,
-                  // make it full height maintain the aspect ratio and go outside the container
-                  fit: BoxFit.fitHeight,
-                )
-            ),
-            Center(
-              child: Column(
-                // make the height of the container to be adjusted based on the content
-                  mainAxisSize: MainAxisSize.min,
-                  children:[
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 30),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: Colors.tealAccent
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(top: 30),
-                                child: Text(
-                                  "LOGIN",
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ),
-                              Form(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    TextFormField(
-                                      keyboardType: TextInputType.emailAddress,
-                                      decoration: InputDecoration(
-                                        labelText: 'Email',
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Enter an email';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (value) {
-                                        _email = value!;
-                                      },
-                                    ),
-                                    SizedBox(height: 20.0),
-                                    TextFormField(
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                        labelText: 'Password',
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Enter a password';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (value) {
-                                        _password = value!;
-                                      },
-                                    ),
-                                    SizedBox(height: 20.0),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        height: 50,
-                                        margin: EdgeInsets.symmetric(horizontal: 30),
-                                        padding: EdgeInsets.only(top: 20),
-                                        child:
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(50.0),
-                                                      side: BorderSide(color: Colors.red)
-                                                  )
-                                              )),
-                                          onPressed: () {
-                                            auth.signInWithEmailAndPassword(email: _email, password: _password);
-                                            print('Email: $_email');
-                                            print('Password: $_password');
-                                          },
-                                          child: Text(
-                                            'Submit',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ]
-                        ),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
-          ]
-      )
-    );
-
-  }
-
-}
-
-
-Future<void> signInWithEmailPassword(String email, String password) async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    // If sign-in is successful, userCredential.user contains the signed-in user
-    User? user = userCredential.user;
-    print('User ${user!.uid} signed in');
-  } catch (e) {
-    // Handle sign-in errors
-    print('Error signing in: $e');
-  }
-}
-
-Future<void> createUserWithEmailPassword(String email, String password) async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    // If user creation is successful, userCredential.user contains the newly created user
-    User? user = userCredential.user;
-    print('User ${user!.uid} created');
-  } catch (e) {
-    // Handle user creation errors
-    print('Error creating user: $e');
-  }
-}
-
+// Future<String> errorOccurInSignUp(String email, String password) async {
+//   String errorCheck = "no error";
+//   FirebaseAuth auth = FirebaseAuth.instance;
+//
+//   try {
+//     await auth.createUserWithEmailAndPassword(
+//       email: email,
+//       password: password,
+//     );
+//   } catch (error) {
+//     errorCheck = error; // Set error to true if an error occurs
+//   }
+//
+//   return errorCheck; // Return true if error occurred, false otherwise
+// }
