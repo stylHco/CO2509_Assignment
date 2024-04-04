@@ -3,43 +3,35 @@ import 'package:flutter/material.dart';
 
 import 'apiServices.dart';
 import 'constands.dart';
-import 'searchAndFilterring.dart';
+
+// ApiService and other imports...
 
 class MoviesPage extends StatefulWidget {
-  const MoviesPage({super.key});
+  const MoviesPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return MoviesPageState();
-  }
-
+  _MoviesPageState createState() => _MoviesPageState();
 }
 
-
-
-class MoviesPageState extends State<MoviesPage>{
-
+class _MoviesPageState extends State<MoviesPage> {
   late List<dynamic> moviesList = [];
   late List<dynamic> genresList = [];
 
-  static String searchedTitle = "";
-
+  String searchedTitle = "";
 
   @override
   void initState() {
     super.initState();
-
-    getData(moviesList, "$moviesSearchURL/?query=ded");
-    getData(genresList, moviesGenres);
-
+    getData();
   }
 
-  void getData(List<dynamic> list, String url) async {
+  void getData() async {
     try {
+      final String url = "$moviesSearchURL?query=$searchedTitle";
       final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
-        list.clear(); // Clear the existing content
-        list.addAll(fetchedData); // Add the new data
+        moviesList.clear();
+        moviesList.addAll(fetchedData);
       });
     } catch (error) {
       if (kDebugMode) {
@@ -48,40 +40,64 @@ class MoviesPageState extends State<MoviesPage>{
     }
   }
 
+  void updateSearchQuery(String query) {
+    setState(() {
+      searchedTitle = query;
+    });
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        body: Center(
-          child: Column(
-            children:<Widget>[
-              const SizedBox(height: 25,),
-              Container(
-                  child: SearchBarApp()
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            const SizedBox(height: 25),
+            SearchBarApp(onSubmitted: updateSearchQuery),
+            const SizedBox(height: 25),
+            Flexible(
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  if (moviesList.isEmpty)
+                    Center(child: CircularProgressIndicator())
+                  else
+                    MoviesList(itemList: moviesList),
+                  const SizedBox(height: 25),
+                ],
               ),
-              const SizedBox(height: 25,),
-              Flexible(
-                 child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    // if (moviesList.isEmpty)
-                    //   Center(child: CircularProgressIndicator())
-                    // else
-                      MoviesList(itemList: moviesList),
-                    const SizedBox(height: 25,),
-                    ],
-                 ),
-              ),
-            ]
-          )
+            ),
+          ],
         ),
-
-        backgroundColor: Colors.teal[100]
+      ),
+      backgroundColor: Colors.teal[100],
     );
   }
 }
 
+class SearchBarApp extends StatelessWidget {
+  final Function(String) onSubmitted;
+
+  const SearchBarApp({required this.onSubmitted, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Center(
+          child: SearchBar(
+            padding: const MaterialStatePropertyAll<EdgeInsets>(
+              EdgeInsets.symmetric(horizontal: 15.0),
+            ),
+            leading: const Icon(Icons.search),
+            onSubmitted: onSubmitted,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class MoviesList extends StatelessWidget {
   final List<dynamic> itemList;
@@ -196,38 +212,5 @@ class MoviesList extends StatelessWidget {
         );
       }).toList(),
     );
-  }
-}
-
-
-class SearchBarApp extends StatefulWidget {
-  const SearchBarApp({super.key});
-
-  @override
-  State<SearchBarApp> createState() => searchAdFilterUI();
-}
-
-class searchAdFilterUI extends State<SearchBarApp>  {
-
-  @override
-  Widget build(BuildContext context) {
-    return  Column(
-      children: [
-        Center(
-          child:   SearchBar(
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 15.0)),
-
-                  leading: const Icon(Icons.search),
-            onChanged: (value) {
-              setState(() {
-                MoviesPageState.searchedTitle = value;
-              });
-            },
-                )
-        ),
-        Text('Search Query: ${MoviesPageState.searchedTitle}'),
-    ]
-      );
   }
 }

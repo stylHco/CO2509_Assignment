@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -212,7 +214,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                                     ), // Circle shape
                                   ),
                                   onPressed: (){
-                                    ShowLists(context,type);
+                                    ShowLists(context,type,id);
                                   },
                                   child: Icon(
                                     Icons.add
@@ -279,7 +281,8 @@ class MoreInfoPageState extends State<MoreInfoPage> {
 
 // build the modal to add the lists to the firebase
 
-void ShowLists(BuildContext context, String listType) {
+void ShowLists(BuildContext context, String itemType, int itemIndex) {
+  ListType listType;
   showDialog(
       context: context,
       builder: (_)
@@ -292,8 +295,10 @@ void ShowLists(BuildContext context, String listType) {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextButton(
-                      onPressed: (){
+                      onPressed: () async {
                         print("pressed");
+                        listType = ListType.favorites;
+                        await AddToList(listType,itemType,itemIndex);
                       },
                       child: const Text('Add to Favorites'),
                     ),
@@ -323,4 +328,41 @@ void ShowLists(BuildContext context, String listType) {
         );
       }
   );
+}
+
+
+Future<void> AddToList(ListType listType, String itemType, int itemIndex) async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final ref = FirebaseDatabase.instance.ref();
+
+  print(itemType.toString());
+  print(listType.toString());
+  print(itemIndex);
+
+
+  Map <String, dynamic> userData = {
+    itemType.toString():{
+      listType.toString():{
+        "id": itemIndex
+      }
+    }
+  };
+
+  // await ref.child('users/${auth.currentUser!.uid}/lists').update(userData);
+
+  //
+  // // check if the list exists
+  // final snapshot =
+  // await ref.child('users/${auth.currentUser!.uid}/lists/${itemType.toString()}/${listType.toString()}').get();
+  // if (!snapshot.exists) {
+  //
+  //   print ("not ");
+  //   // construct the list because does not exists
+  //
+  //
+  //   //
+  //   // await ref.child('users/${auth.currentUser?.uid}').update(userData);
+  //
+  //
+  // }
 }

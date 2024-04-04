@@ -42,3 +42,12 @@ const String backdropPathURL = "https://image.tmdb.org/t/p/w500";
 const String logoUrl = "lib/Resources/images/api_logo.png";
 const String filmImageUrl = "lib/Resources/images/filmImage.png";
 const String movieImageUrl = "lib/Resources/images/movieImage.png";
+
+
+// enum for list types
+
+enum ListType{
+  favorites,
+  watched,
+  planToWatch
+}

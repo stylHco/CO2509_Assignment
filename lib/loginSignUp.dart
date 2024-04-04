@@ -302,11 +302,28 @@ class _SignUpFormState extends State<SignUpForm> {
 
                                                       DatabaseReference ref = FirebaseDatabase.instance.ref("users");
 
-                                                      await ref.set({
-                                                        auth.currentUser?.uid:{
-                                                          "name": _name
+                                                      // map the user data
+                                                      Map <String, dynamic> userData = {
+                                                        auth.currentUser!.uid: {
+                                                          "name": _name,
+                                                          // "lists": {
+                                                          //   "movies": {
+                                                          //     "favorites": <int>[
+                                                          //       1
+                                                          //     ],
+                                                          //     "watched": <int>[],
+                                                          //     "planToWatch": <int>[],
+                                                          //   },
+                                                          //   "tv": {
+                                                          //     "favorites": <int>[],
+                                                          //     "watched": <int>[],
+                                                          //     "planToWatch": <int>[],
+                                                          //   },
+                                                          // },
                                                         }
-                                                      }).then((_){
+                                                      };
+
+                                                      await ref.update(userData).then((_){
 
                                                         if (!mounted) return;
                                                         // go back so can redirect to the home page
@@ -562,19 +579,3 @@ class _LoginFormState extends State<LoginForm> {
 
 
 
-
-// Future<String> errorOccurInSignUp(String email, String password) async {
-//   String errorCheck = "no error";
-//   FirebaseAuth auth = FirebaseAuth.instance;
-//
-//   try {
-//     await auth.createUserWithEmailAndPassword(
-//       email: email,
-//       password: password,
-//     );
-//   } catch (error) {
-//     errorCheck = error; // Set error to true if an error occurs
-//   }
-//
-//   return errorCheck; // Return true if error occurred, false otherwise
-// }
