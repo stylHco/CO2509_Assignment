@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'homePage.dart';
 import 'loginSignUp.dart';
@@ -43,51 +44,81 @@ Future<bool> checkInternetConnection(BuildContext context) async {
 
 
 void buildAlert(BuildContext context) {
-         showDialog(
-            context: context,
-            builder: (_)
-          {
-             return AlertDialog(
-               title: const Text('Network Connection Lost'),
-               content: const Text('Check you network and try again'),
-               actions: [
-                 TextButton(
-                   onPressed: Navigator
-                       .of(context)
-                       .pop,
-                   child: const Text('Retry'),
-                 )
-                 ,TextButton(
-                   onPressed: ()=> exit(0),
-                   child: const Text('Exit'),
-                 ),
-               ],
-             );
-          }
-         );
+  showDialog(
+      context: context,
+      builder: (_)
+      {
+        return AlertDialog(
+          title: const Text('Network Connection Lost'),
+          content: const Text('Check you network and try again'),
+          actions: [
+            TextButton(
+              onPressed: Navigator
+                  .of(context)
+                  .pop,
+              child: const Text('Retry'),
+            )
+            ,TextButton(
+              onPressed: ()=> exit(0),
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      }
+  );
 }
 
+
+class ThemeProvider extends ChangeNotifier {
+  late ThemeData _selectedTheme;
+  final SharedPreferences _prefs;
+
+  ThemeProvider(this._prefs) {
+    _selectedTheme = _prefs.getBool('darkTheme') ?? false ? darkTheme : lightTheme;
+  }
+
+  ThemeData getTheme() => _selectedTheme;
+
+  void toggleTheme() {
+    _selectedTheme = _selectedTheme == lightTheme ? darkTheme : lightTheme;
+    _prefs.setBool('darkTheme', _selectedTheme == darkTheme);
+    notifyListeners();
+  }
+}
 
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // themeMode: ThemeMode.dark,
-      // darkTheme: ThemeData.dark(),
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: AuthWrapper(),
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        final SharedPreferences prefs = snapshot.data!;
+        return ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(prefs),
+          child: Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              return MaterialApp(
+                darkTheme: darkTheme,
+                theme: themeProvider.getTheme(),
+                home: AuthWrapper(),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
 
 class MainApplication extends StatefulWidget {
-  const MainApplication({Key? key}) : super(key: key);
+  MainApplication({Key? key}) : super(key: key);
 
   @override
   _MainApplicationState createState() => _MainApplicationState();
@@ -96,7 +127,7 @@ class MainApplication extends StatefulWidget {
 class _MainApplicationState extends State<MainApplication> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
-    const HomePage(),
+    HomePage(),
     MoviesPage(),
     TvSeriesPage(),
     ListsPage(),
@@ -121,15 +152,15 @@ class _MainApplicationState extends State<MainApplication> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('MOVIES-LIST'),
-        backgroundColor: Colors.teal,
+        // backgroundColor: Colors.teal,
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.tealAccent,
-        unselectedItemColor: Colors.grey[300],
-        backgroundColor: Colors.teal,
+        // selectedItemColor: Colors.tealAccent,
+        // unselectedItemColor: Colors.grey[300],
+        // backgroundColor: Colors.teal,
         elevation: 10,
         selectedFontSize: 14,
         unselectedFontSize: 12,
@@ -173,7 +204,7 @@ class AuthWrapper extends StatelessWidget {
       builder: (context, snapshot) {
         // If the snapshot has user data, then they are logged in
         if (snapshot.hasData) {
-          return const MainApplication(); // Your main page widget
+          return  MainApplication(); // Your main page widget
         } else {
           return InitialPage(); // Your login page widget
         }
@@ -181,3 +212,88 @@ class AuthWrapper extends StatelessWidget {
     );
   }
 }
+
+
+
+final lightTheme = ThemeData.light().copyWith(
+    primaryColor: Colors.teal,
+    primaryColorLight: Colors.tealAccent,
+    primaryColorDark: Colors.black,
+
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.teal,
+    ),
+    iconTheme: IconThemeData(
+        color: Colors.grey[300]
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.teal,
+        selectedItemColor: Colors.tealAccent,
+        unselectedItemColor: Colors.grey[300]
+    ),
+    scaffoldBackgroundColor: Colors.teal[100],
+    textTheme:  TextTheme(
+        bodyText1: TextStyle(
+            color: Colors.black
+        ),
+        bodyText2: TextStyle(
+            color: Colors.black
+        ),
+        headline1: TextStyle(
+            color: Colors.black
+        ),
+    )
+);
+
+final darkTheme = ThemeData.dark().copyWith(
+    primaryColor: Colors.yellow,
+    primaryColorLight: Colors.yellowAccent,
+    primaryColorDark: Colors.black,
+    cardTheme: CardTheme(
+        color: Colors.grey[300]
+    ),
+    dialogTheme: const DialogTheme(
+      backgroundColor: Colors.grey,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.grey,
+    ),
+    iconTheme: IconThemeData(
+        color: Colors.grey[300]
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.grey,
+        selectedItemColor: Colors.yellow,
+        unselectedItemColor: Colors.grey[300]
+    ),
+    scaffoldBackgroundColor: Colors.black54,
+    textTheme: const TextTheme(
+        bodyText1: TextStyle(
+            color: Colors.white
+        ),
+        bodyText2: TextStyle(
+            color: Colors.white
+        ),
+        headline1: TextStyle(
+            color: Colors.white
+        )
+    ),
+    textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            primary: Colors.black
+        )
+    ),
+    buttonTheme: const ButtonThemeData(
+        buttonColor: Colors.black45
+    ),
+    listTileTheme: const ListTileThemeData(
+        textColor: Colors.white
+    ),
+    expansionTileTheme: const ExpansionTileThemeData(
+        textColor: Colors.white
+    ),
+    searchBarTheme: SearchBarThemeData(
+        backgroundColor: MaterialStateProperty.all<Color>(
+            Colors.grey.shade600)
+    )
+);

@@ -14,7 +14,7 @@ class TvSeriesPage extends StatefulWidget {
 }
 
 class _TvSeriesPageState extends State<TvSeriesPage> {
-  late List<dynamic> tvSeriesList = [];
+  late List tvSeriesList = [];
 
   String searchedQuery = "";
 
@@ -49,9 +49,9 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
   }
   // this function empty the list and use the url and api call
   // to fill it with the data
-  void getData(List<dynamic> list, String url) async {
+  void getData(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear();
         list.addAll(fetchedData);
@@ -113,7 +113,6 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
           ],
         ),
       ),
-      backgroundColor: Colors.teal[100],
     );
   }
 }
@@ -145,7 +144,7 @@ class SearchBarApp extends StatelessWidget {
 }
 
 class TvSeriesList extends StatelessWidget {
-  final List<dynamic> itemList;
+  final List itemList;
 
   const TvSeriesList({required this.itemList, Key? key}) : super(key: key);
 
@@ -159,7 +158,7 @@ class TvSeriesList extends StatelessWidget {
             margin: EdgeInsets.all(15),
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
-                color: Colors.tealAccent,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.tealAccent, width: 3)
             ),

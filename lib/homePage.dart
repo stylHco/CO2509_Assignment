@@ -24,15 +24,15 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage>{
 
-  late List<dynamic> playingNowTVSeries = [];
+  late List playingNowTVSeries = [];
 
-  late List<dynamic> playingNowTVSeriesImg = [];
+  late List playingNowTVSeriesImg = [];
 
-  late List<dynamic> playingNowMovies = [];
-  late List<dynamic> topRatedMovies = [];
-  late List<dynamic> upcomingMovies = [];
-  late List<dynamic> popularTVSeries = [];
-  late List<dynamic> topRatedTVSeries = [];
+  late List playingNowMovies = [];
+  late List topRatedMovies = [];
+  late List upcomingMovies = [];
+  late List popularTVSeries = [];
+  late List topRatedTVSeries = [];
 
 
   @override
@@ -47,9 +47,9 @@ class HomePageState extends State<HomePage>{
 
   }
 
-  void getData(List<dynamic> list, String url) async {
+  void getData(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear(); // Clear the existing content
         list.addAll(fetchedData); // Add the new data
@@ -88,7 +88,7 @@ class HomePageState extends State<HomePage>{
                 ],
               ),
       ),
-        backgroundColor: Colors.teal[100]
+        // backgroundColor: Colors.teal[100]
     );
   }
 
@@ -105,19 +105,18 @@ class BoxTitles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = const TextStyle(
-        fontSize: 18.0,
-        color: Colors.black54,
-        fontWeight: FontWeight.w600,
-    );
 
     return Container(
-      decoration: const BoxDecoration(color: Colors.tealAccent),
+      // decoration: const BoxDecoration(color: Colors.tealAccent),
       padding: const EdgeInsets.all(16.0),
       width: MediaQuery.of(context).size.width,
       child: Text(
         title.toString(),
-        style: textStyle,
+        style:  TextStyle(
+          fontSize: 18.0,
+          color: Theme.of(context).primaryColor,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -257,7 +256,7 @@ class CarouselHomePage extends StatelessWidget {
                               displayText,
                               textAlign: TextAlign.left,
                               style: const TextStyle(
-                                color: Colors.black,
+                                // color: Colors.black,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -292,7 +291,7 @@ class CarouselHomePage extends StatelessWidget {
 class CarouselTile extends StatelessWidget {
   const CarouselTile({super.key, required this.list, required this.title, required this.listType});
 
-  final List<dynamic> list;
+  final List list;
   final String title;
   final String listType;
 

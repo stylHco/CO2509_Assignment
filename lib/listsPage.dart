@@ -19,7 +19,7 @@ class ListsPage extends StatefulWidget {
 
 class ListsPageState extends State<ListsPage>{
 
-  late List<dynamic> itemsList = [];
+  late List itemsList = [];
 
   late ListType listType;
 
@@ -30,9 +30,9 @@ class ListsPageState extends State<ListsPage>{
     super.initState();
   }
 
-  void getData(List<dynamic> list, String url) async {
+  void getData(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear(); // Clear the existing content
         list.addAll(fetchedData); // Add the new data
@@ -73,7 +73,13 @@ class ListsPageState extends State<ListsPage>{
                   children: [
                     ExpansionTile(
                       title: Text(
-                        "MOVIES"
+                        "MOVIES",
+                        style: Theme.of(context).textTheme.bodyText1,
+
+                      ),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).primaryColorLight,
                       ),
 
                       children: <Widget>[
@@ -88,7 +94,9 @@ class ListsPageState extends State<ListsPage>{
                               );
                             },
                             child: Text(
-                              "Favorites"
+                              "Favorites",
+                              style: Theme.of(context).textTheme.bodyText1,
+
                             ),
                           )
                         ),
@@ -103,7 +111,9 @@ class ListsPageState extends State<ListsPage>{
                                 );
                               },
                               child: Text(
-                                  "Watched"
+                                  "Watched",
+                                style: Theme.of(context).textTheme.bodyText1,
+
                               ),
                             )
                         ),
@@ -118,7 +128,9 @@ class ListsPageState extends State<ListsPage>{
                                 );
                               },
                               child: Text(
-                                  "PlanToWatch"
+                                  "PlanToWatch",
+                                style: Theme.of(context).textTheme.bodyText1,
+
                               ),
                             )
                         )
@@ -126,7 +138,12 @@ class ListsPageState extends State<ListsPage>{
                     ),
                     ExpansionTile(
                       title: Text(
-                          "TV SERIES"
+                          "TV SERIES",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).primaryColorLight,
                       ),
 
                       children: <Widget>[
@@ -141,7 +158,9 @@ class ListsPageState extends State<ListsPage>{
                                 );
                               },
                               child: Text(
-                                  "Favorites"
+                                  "Favorites",
+                                style: Theme.of(context).textTheme.bodyText1,
+
                               ),
                             )
                         ),
@@ -156,7 +175,9 @@ class ListsPageState extends State<ListsPage>{
                                 );
                               },
                               child: Text(
-                                  "Watched"
+                                  "Watched",
+                                style: Theme.of(context).textTheme.bodyText1,
+
                               ),
                             )
                         ),
@@ -171,7 +192,9 @@ class ListsPageState extends State<ListsPage>{
                                 );
                               },
                               child: Text(
-                                  "PlanToWatch"
+                                  "PlanToWatch",
+                                style: Theme.of(context).textTheme.bodyText1,
+
                               ),
                             )
                         )
@@ -183,7 +206,6 @@ class ListsPageState extends State<ListsPage>{
             ],
           ),
         ),
-        backgroundColor: Colors.teal[100]
     );
   }
 

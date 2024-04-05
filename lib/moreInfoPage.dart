@@ -31,7 +31,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
   late String type;
 
 
-  late List<dynamic> itemList = [];
+  late List itemList = [];
 
   @override
   void initState() {
@@ -41,17 +41,19 @@ class MoreInfoPageState extends State<MoreInfoPage> {
     // if its not a movie then try the link for the tv series
     if (type == "tv"){
       getItem(itemList, '$tvSeriesDetailsURL/$id');
+      print(id);
     }
     else{
       getItem(itemList, '$movieDetailsURL/$id');
+      print(id);
     }
 
   }
 
 
-  void getItem(List<dynamic> list, String url) async {
+  void getItem(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear(); // Clear the existing content
         list.addAll(fetchedData); // Add the new data
@@ -92,7 +94,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                             child:  itemList[index]['backdrop_path'] != null && itemList[index]['backdrop_path'] != ''
                       ?
                             Image.network(
-                                backdropPathURL + itemList[index]['backdrop_path'], // Text content
+                                "$backdropPathURL${itemList[index]['backdrop_path']}"??'', // Text content
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, StackTrace? stackTrace) {
                                   return Image.asset(
@@ -214,6 +216,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                             children: [
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context).primaryColorLight,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)
                                     ), // Circle shape
@@ -222,7 +225,8 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                                     ShowLists(context,type,id);
                                   },
                                   child: Icon(
-                                    Icons.add
+                                    Icons.add,
+                                    color: Theme.of(context).primaryColorDark,
                                   )
                               )
                             ],
@@ -294,7 +298,13 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
       builder: (_)
       {
         return AlertDialog(
-          title: const Text('Add it to a list'),
+          title:  Text(
+              "Add it to a list",
+            style: TextStyle(
+              color: Theme.of(context).primaryColorDark
+            ),
+          ),
+
           content:
               Container(
                 child: Column(
@@ -305,21 +315,36 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
                         listType = ListType.favorites;
                         await AddToList(context,listType, itemType, itemIndex);
                       },
-                      child: const Text('Add to Favorites'),
+                      child:  Text(
+                          'Add to Favorites',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColorDark
+                        ),
+                      ),
                     ),
                       TextButton(
                       onPressed: () async {
                         listType = ListType.watched;
                         await AddToList(context,listType, itemType, itemIndex);
                       },
-                      child: const Text('Add to Watched'),
+                      child:  Text(
+                          'Add to Watched',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorDark
+                          ),
+                        ),
                     ),
                     TextButton(
                       onPressed: () async {
                         listType = ListType.planToWatch;
                         await AddToList(context,listType, itemType, itemIndex);
                       },
-                      child: const Text('Add to plan to Watched'),
+                      child:  Text(
+                          'Add to plan to Watched',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColorDark
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -329,7 +354,12 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
               onPressed: Navigator
                   .of(context)
                   .pop,
-              child: const Text('OK'),
+              child:  Text(
+                  'OK',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColorDark
+                ),
+              ),
             )
           ],
         );
@@ -368,11 +398,19 @@ void addedToTheListSuccessfully(BuildContext context) {
       builder: (_)
       {
         return AlertDialog(
-          title: const Text('Added to the lis'),
+          title:  Text(
+              'Added to the lis',
+            style: TextStyle(
+          color: Theme.of(context).primaryColorDark
+        ),
+          ),
           content:
           Container(
             child: Text(
-              "The item added to the list successfully"
+              "The item added to the list successfully",
+              style: TextStyle(
+                  color: Theme.of(context).primaryColorDark
+              ),
             ),
           ),
           actions: [
@@ -380,7 +418,12 @@ void addedToTheListSuccessfully(BuildContext context) {
               onPressed: Navigator
                   .of(context)
                   .pop,
-              child: const Text('OK'),
+              child:  Text(
+                  'OK',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColorDark
+                ),
+              ),
             )
           ],
         );

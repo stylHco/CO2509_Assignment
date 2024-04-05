@@ -13,7 +13,7 @@ class MoviesPage extends StatefulWidget {
 }
 
 class _MoviesPageState extends State<MoviesPage> {
-  late List<dynamic> moviesList = [];
+  late List moviesList = [];
 
 
   String searchedQuery = "";
@@ -52,9 +52,9 @@ class _MoviesPageState extends State<MoviesPage> {
 
   // this function empty the list and use the url and api call
   // to fill it with the data
-  void getData(List<dynamic> list, String url) async {
+  void getData(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear();
         list.addAll(fetchedData);
@@ -116,7 +116,6 @@ class _MoviesPageState extends State<MoviesPage> {
           ],
         ),
       ),
-      backgroundColor: Colors.teal[100],
     );
   }
 }
@@ -148,7 +147,7 @@ class SearchBarApp extends StatelessWidget {
 }
 
 class MoviesList extends StatelessWidget {
-  final List<dynamic> itemList;
+  final List itemList;
 
   const MoviesList({required this.itemList, Key? key}) : super(key: key);
 
@@ -162,115 +161,118 @@ class MoviesList extends StatelessWidget {
             margin: EdgeInsets.all(15),
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
-                color: Colors.tealAccent,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.tealAccent, width: 3)
+                // border: Border.all(color: Colors.tealAccent, width: 3)
             ),
-            child: ElevatedButton(
-              // remove the colors from the button
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                elevation: 0, // this removes the shadow
-                padding: EdgeInsets.zero, // Remove padding
-              ),
+            child: Column(
+              children:<Widget>[
+                ElevatedButton(
+                  // remove the colors from the button
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0, // this removes the shadow
+                    padding: EdgeInsets.zero, // Remove padding
+                  ),
 
-              onPressed: () {
-                print(item['id']);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>  MoreInfoPage(inputId: item['id'], inputType: "movie",)),
-                );
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  MoreInfoPage(inputId: item['id'], inputType: "movie",)),
+                    );
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                children: <Widget>[
-                  Container(
-                    // this ensures that every image has the same size
-                    // and at the same time maintain its aspect ratio
-                    height: 150,
-                    width: 150,
-                    child: Stack(
-                      children:<Widget> [
-                        Positioned.fill(
-                          child: Image.network(
-                            backdropPathURL + (item['backdrop_path'] ?? ''),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                logoUrl,
-                                height: 250.0,
-                                width: 250.0,
-                              );
-                            },
-                          ),
-                        ),
-                        // a tint to the bottom half of the image to make the text visible
-                        // for the linear gradient i used this website https://api.flutter.dev/flutter/painting/LinearGradient-class.html
-                        Positioned.fill(
-                          bottom: 0.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.7),
-                                  Colors.transparent,
+                    children: <Widget>[
+                      Container(
+                        // this ensures that every image has the same size
+                        // and at the same time maintain its aspect ratio
+                        height: 150,
+                        width: 150,
+                        child: Stack(
+                          children:<Widget> [
+                            Positioned.fill(
+                              child: Image.network(
+                                backdropPathURL + (item['backdrop_path'] ?? ''),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    logoUrl,
+                                    height: 250.0,
+                                    width: 250.0,
+                                  );
+                                },
+                              ),
+                            ),
+                            // a tint to the bottom half of the image to make the text visible
+                            // for the linear gradient i used this website https://api.flutter.dev/flutter/painting/LinearGradient-class.html
+                            Positioned.fill(
+                              bottom: 0.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(0.7),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10.0,
+                              left: 10.0,
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    "${item['vote_average']} ",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.white,
+                                    size: 15.0,
+                                  ),
+                                  Text(
+                                    "  |   ${item['vote_count']}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10.0,
-                          left: 10.0,
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                "${item['vote_average']} ",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Icon(
-                                Icons.star,
-                                color: Colors.white,
-                                size: 15.0,
-                              ),
-                              Text(
-                                "  |   ${item['vote_count']}",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 25.0),
-                      child: Text(
-                        "${item['name'] ?? item['title'] ?? 'Title not found'}  ${item['first_air_date'] != null ? DateTime.parse(item['first_air_date']).year : ''}",
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                          ],
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 5),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 25.0),
+                          child: Text(
+                            "${item['name'] ?? item['title'] ?? 'Title not found'}  ${item['first_air_date'] != null ? DateTime.parse(item['first_air_date']).year : ''}",
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ]
             ),
           ),
         );

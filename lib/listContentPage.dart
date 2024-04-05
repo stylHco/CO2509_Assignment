@@ -30,8 +30,7 @@ class ListContentState extends State<ListContent> {
 
   bool dataIsLoading = false;
 
-  // late List<dynamic> itemList = [];
-  late List<List<dynamic>> allItemList = [];
+  late List<List> allItemList = [];
   late List<int>  idsList = [];
 
   @override
@@ -41,9 +40,9 @@ class ListContentState extends State<ListContent> {
   }
 
 
-  Future<void> getItem(List<dynamic> list, String url) async {
+  Future<void> getItem(List list, String url) async {
     try {
-      final List<dynamic> fetchedData = await ApiService.fetchListOfData(url);
+      final List fetchedData = await ApiService.fetchListOfData(url);
       setState(() {
         list.clear(); // Clear the existing content
         list.addAll(fetchedData); // Add the new data
@@ -86,7 +85,7 @@ class ListContentState extends State<ListContent> {
     idsList = await getIDs();
 
     for (int i=0;i<idsList.length;i++){
-      late List<dynamic> itemList = [];
+      late List itemList = [];
       // if its not a movie then try the link for the tv series
       if (itemType == "tv"){
         await getItem(itemList, '$tvSeriesDetailsURL/${idsList[i]}');
@@ -199,7 +198,6 @@ class ListContentState extends State<ListContent> {
           ],
         ),
       ),
-      backgroundColor: Colors.teal[100],
     );
   }
 
@@ -208,7 +206,7 @@ class ListContentState extends State<ListContent> {
 
 
 class MoviesList extends StatelessWidget {
-  final List<List<dynamic>> allItemList;
+  final List<List> allItemList;
 
   const MoviesList({required this.allItemList,required this.itemType ,Key? key, required this.removeItemCallback}) : super(key: key);
 
@@ -232,9 +230,9 @@ class MoviesList extends StatelessWidget {
                   margin: EdgeInsets.all(15),
                   padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: Colors.tealAccent,
+                    color: Theme.of(context).primaryColorLight,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.tealAccent, width: 3),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 3),
                   ),
                   child: ElevatedButton(
                     onPressed: () {
@@ -325,8 +323,8 @@ class MoviesList extends StatelessWidget {
                               child: Text(
                                 "${item['name'] ?? item['title'] ?? 'Title not found'}  ${item['first_air_date'] != null ? DateTime.parse(item['first_air_date']).year : ''}",
                                 textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  color: Colors.black,
+                                style:  TextStyle(
+                                  color: Theme.of(context).primaryColorDark,
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 ),

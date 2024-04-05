@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'constands.dart';
 import 'main.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 
+
+// make the login page
 class InitialPage extends StatelessWidget {
 
   const InitialPage({Key? key}) : super(key: key);
@@ -59,6 +62,7 @@ class InitialPage extends StatelessWidget {
                               onPressed: () {
                                 Navigator.push(
                                   context,
+                                  // redirect to login page
                                   MaterialPageRoute(builder: (context) => const LoginForm()),
                                 );
                               },
@@ -67,12 +71,16 @@ class InitialPage extends StatelessWidget {
                                   RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50.0),
                                   side: BorderSide(color: Colors.red)
-                                  )
-                              )),
+                                  ),
+                              ),
+                                  // background color that is the themes primary color
+                                  backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).primaryColor)
+                              ),
                               child: Text(
                                 "GET STARTED",
                                 style: TextStyle(
-                                  fontSize: 30
+                                  fontSize: 30,
+                                  color: Theme.of(context).primaryColorDark
                                 ),
                               ),
 
@@ -82,12 +90,13 @@ class InitialPage extends StatelessWidget {
                     ],
                   ),
                 ),
+                // to create new account
                 Container(
                   margin: EdgeInsets.only(top: 30),
                   child: Text(
                     "Don't have an account?",
                     style: TextStyle(
-                        fontSize: 20
+                        fontSize: 20,
                     ),
                   ),
                 ),
@@ -100,12 +109,15 @@ class InitialPage extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const SignUpForm()),
                       );
                     },
+                    // redirect to the new account sign up page
                     child: Text(
                       "create account",
                       style: TextStyle(
-                        fontSize: 15,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
+                         fontSize: 15,
+                         decoration: TextDecoration.underline,
+                         fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor
+
                       ),
                     ),
                   ),
@@ -120,7 +132,7 @@ class InitialPage extends StatelessWidget {
 }
 
 
-
+// the signup form
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
   @override
@@ -129,11 +141,16 @@ class SignUpForm extends StatefulWidget {
 
 
 class _SignUpFormState extends State<SignUpForm> {
+
+  // temporary store  all the data in variables from the input fields
   String _email = '';
   String _password = '';
   String _name = '';
   String _repeatPassword = '';
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // this global key is used to make sure that the form is unique for validations
+  // i used this website for this part
+  //  https://docs.flutter.dev/cookbook/forms/validation
+  final _formKey = GlobalKey<FormState>();
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -161,7 +178,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           margin: EdgeInsets.symmetric(horizontal: 30),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
-                              color: Colors.tealAccent
+                              color: Theme.of(context).primaryColor
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(20.0),
@@ -173,7 +190,9 @@ class _SignUpFormState extends State<SignUpForm> {
                                       "SIGN UP",
                                       style: TextStyle(
                                           fontSize: 30,
-                                          fontWeight: FontWeight.bold
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColorDark
+
                                       ),
                                     ),
                                   ),
@@ -183,9 +202,15 @@ class _SignUpFormState extends State<SignUpForm> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         TextFormField(
+                                          style: TextStyle(
+                                              color: Theme.of(context).primaryColorDark
+                                          ),
                                           keyboardType: TextInputType.emailAddress,
                                           decoration: InputDecoration(
                                             labelText: 'Email',
+                                            labelStyle: TextStyle(
+                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                            ),
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -199,9 +224,15 @@ class _SignUpFormState extends State<SignUpForm> {
                                         ),
                                         SizedBox(height: 20.0),
                                         TextFormField(
+                                          style: TextStyle(
+                                              color: Theme.of(context).primaryColorDark
+                                          ),
                                           keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
                                             labelText: 'Name',
+                                            labelStyle: TextStyle(
+                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                            ),
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -215,9 +246,15 @@ class _SignUpFormState extends State<SignUpForm> {
                                         ),
                                         SizedBox(height: 20.0),
                                         TextFormField(
+                                          style: TextStyle(
+                                              color: Theme.of(context).primaryColorDark
+                                          ),
                                           obscureText: true,
                                           decoration: InputDecoration(
                                             labelText: 'Password',
+                                            labelStyle: TextStyle(
+                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                            ),
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -231,9 +268,15 @@ class _SignUpFormState extends State<SignUpForm> {
                                         ),
                                         SizedBox(height: 20.0),
                                         TextFormField(
+                                          style: TextStyle(
+                                              color: Theme.of(context).primaryColorDark
+                                          ),
                                           obscureText: true,
                                           decoration: InputDecoration(
                                             labelText: 'Repeat Password',
+                                            labelStyle: TextStyle(
+                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                            ),
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -262,7 +305,9 @@ class _SignUpFormState extends State<SignUpForm> {
                                                           borderRadius: BorderRadius.circular(50.0),
                                                           side: BorderSide(color: Colors.red)
                                                       )
-                                                  )),
+                                                  ),
+                                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.teal)
+                                              ),
                                               onPressed: () async {
                                                 // check if the values are valid and only then save the form,
                                                 if (_formKey.currentState!.validate()) {
@@ -274,17 +319,27 @@ class _SignUpFormState extends State<SignUpForm> {
                                                         context: context,
                                                         builder: (_){
                                                           return AlertDialog(
-                                                            title: const Text(
-                                                                'ERROR on Password'),
-                                                            content: const Text(
-                                                                'The passwords does not much. Try again'),
+                                                            title:  Text(
+                                                                'ERROR on Password',
+                                                              style: TextStyle(
+                                                                  color: Theme.of(context).primaryColorDark
+                                                              ),
+                                                            ),
+                                                            content:  Text(
+                                                                'The passwords does not much. Try again',
+                                                              style: TextStyle(
+                                                                  color: Theme.of(context).primaryColorDark
+                                                              ),),
                                                             actions: [
                                                               TextButton(
                                                                 onPressed: Navigator
                                                                     .of(context)
                                                                     .pop,
-                                                                child: const Text(
-                                                                    'OK'),
+                                                                child:  Text(
+                                                                    'OK',
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(context).primaryColorDark
+                                                                  ),),
                                                               )
                                                             ],
                                                           );
@@ -320,17 +375,29 @@ class _SignUpFormState extends State<SignUpForm> {
                                                             context: context,
                                                             builder: (_) {
                                                               return AlertDialog(
-                                                                title: const Text(
-                                                                    'SIGN UP'),
-                                                                content: const Text(
-                                                                    'You successfully created an account'),
+                                                                title:  Text(
+                                                                    'SIGN UP',
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(context).primaryColorDark
+                                                                  ),
+                                                                ),
+                                                                content:  Text(
+                                                                    'You successfully created an account',
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(context).primaryColorDark
+                                                                  ),
+                                                                ),
                                                                 actions: [
                                                                   TextButton(
                                                                     onPressed: Navigator
                                                                         .of(context)
                                                                         .pop,
-                                                                    child: const Text(
-                                                                        'CLOSE'),
+                                                                    child:  Text(
+                                                                        'CLOSE',
+                                                                      style: TextStyle(
+                                                                          color: Theme.of(context).primaryColorDark
+                                                                      ),
+                                                                    ),
                                                                   )
                                                                 ],
                                                               );
@@ -344,14 +411,23 @@ class _SignUpFormState extends State<SignUpForm> {
                                                         context: context,
                                                         builder: (_) {
                                                           return AlertDialog(
-                                                            title: const Text('SIGN UP ERROR'),
-                                                            content: Text('ERROR: $error'),
+                                                            title:  Text('SIGN UP ERROR',
+                                                              style: TextStyle(
+                                                                  color: Theme.of(context).primaryColorDark
+                                                              ),),
+                                                            content: Text('ERROR: $error',
+                                                              style: TextStyle(
+                                                                  color: Theme.of(context).primaryColorDark
+                                                              ),),
                                                             actions: [
                                                               TextButton(
                                                                 onPressed: () {
                                                                   Navigator.of(context).pop();
                                                                 },
-                                                                child: const Text('CLOSE'),
+                                                                child:  Text('CLOSE',
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(context).primaryColorDark
+                                                                  ),),
                                                               )
                                                             ],
                                                           );
@@ -400,7 +476,12 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   String _email = '';
   String _password = '';
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+// this global key is used to make sure that the form is unique for validations
+  // i used this website for this part
+  //  https://docs.flutter.dev/cookbook/forms/validation
+  final _formKey = GlobalKey<FormState>();
+  // the authendication in firebase
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -427,7 +508,8 @@ class _LoginFormState extends State<LoginForm> {
                   margin: EdgeInsets.symmetric(horizontal: 30),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.tealAccent
+                      color: Theme.of(context).primaryColorLight
+
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
@@ -439,7 +521,8 @@ class _LoginFormState extends State<LoginForm> {
                             "LOGIN",
                             style: TextStyle(
                               fontSize: 30,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColorDark
                             ),
                           ),
                         ),
@@ -449,9 +532,16 @@ class _LoginFormState extends State<LoginForm> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               TextFormField(
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColorDark
+                                ),
                                 keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
+                                decoration:  InputDecoration(
                                   labelText: 'Email',
+                                  labelStyle: TextStyle(
+                                    color: Theme.of(context).primaryColorDark // Choose your desired color
+                                  ),
+
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -465,9 +555,18 @@ class _LoginFormState extends State<LoginForm> {
                               ),
                               SizedBox(height: 20.0),
                               TextFormField(
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColorDark
+                                ),
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   labelText: 'Password',
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).primaryColorDark // Choose your desired color
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: Theme.of(context).primaryColorDark // Choose your desired color
+                                  ),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -495,7 +594,8 @@ class _LoginFormState extends State<LoginForm> {
                                                   borderRadius: BorderRadius.circular(50.0),
                                                   side: BorderSide(color: Colors.red)
                                               )
-                                          )),
+                                          ), backgroundColor: MaterialStatePropertyAll<Color>(Colors.teal)
+                                      ),
                                       onPressed: () async {
                                         // check if the values are valid and only then save the form,
                                         if (_formKey.currentState!.validate()) {
@@ -506,8 +606,18 @@ class _LoginFormState extends State<LoginForm> {
                                             await auth.signInWithEmailAndPassword(
                                               email: _email,
                                               password: _password,
-                                            ).then((_){
+                                            );
+
+                                            // store and initialize the theme
+                                            // in share preferences as local storage
+                                            final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            await prefs.setString('theme', 'light')
+
+                                                .then((_){
                                               if (!mounted) return;
+
+
+
 
                                               // go back so can redirect to the home page
                                               Navigator.of(context).pop();
@@ -519,14 +629,23 @@ class _LoginFormState extends State<LoginForm> {
                                               context: context,
                                               builder: (_) {
                                                 return AlertDialog(
-                                                  title: const Text('SIGN IN ERROR'),
-                                                  content: Text('ERROR: $error'),
+                                                  title:  Text('SIGN IN ERROR',
+                                                    style: TextStyle(
+                                                        color: Theme.of(context).primaryColorDark
+                                                    ),),
+                                                  content: Text('ERROR: $error',
+                                                    style: TextStyle(
+                                                        color: Theme.of(context).primaryColorDark
+                                                    ),),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context).pop();
                                                       },
-                                                      child: const Text('CLOSE'),
+                                                      child:  Text('CLOSE',
+                                                        style: TextStyle(
+                                                            color: Theme.of(context).primaryColorDark
+                                                        ),),
                                                     )
                                                   ],
                                                 );

@@ -6,7 +6,7 @@ import 'constands.dart';
 
 class ApiService {
 
-  static Future<List<dynamic>> fetchListOfData(String apiUrl) async {
+  static Future<List> fetchListOfData(String apiUrl) async {
 
     var url = Uri.parse(apiUrl);
 
