@@ -25,6 +25,7 @@ const String tvSeriesDetailsURL = '$defaultStringForApiCalls/tv';
 
 
 const String moviesSearchURL = '$defaultStringForApiCalls/search/movie';
+const String tvSearchURL = '$defaultStringForApiCalls/search/tv';
 
 
 

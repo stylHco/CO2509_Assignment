@@ -46,9 +46,6 @@ class MoreInfoPageState extends State<MoreInfoPage> {
       getItem(itemList, '$movieDetailsURL/$id');
     }
 
-    print(id);
-
-
   }
 
 
@@ -91,8 +88,11 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                       child: Stack(
                         children: <Widget>[
                           Positioned.fill(
-                            child: Image.network(
-                                backdropPathURL + itemList[index]['backdrop_path']??'', // Text content
+                            // check if the backdrop path is null and then return the default image.
+                            child:  itemList[index]['backdrop_path'] != null && itemList[index]['backdrop_path'] != ''
+                      ?
+                            Image.network(
+                                backdropPathURL + itemList[index]['backdrop_path'], // Text content
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, StackTrace? stackTrace) {
                                   return Image.asset(
@@ -100,6 +100,11 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                                     fit: BoxFit.cover,
                                   );
                                 }
+                            )
+                      :
+                            Image.asset(
+                              logoUrl,
+                              fit: BoxFit.cover,
                             ),
                           ),
                           // a tint to the bottom half of the image to make the text visible
@@ -125,7 +130,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                             child: Row(
                                 children: <Widget>[
                                   Text(
-                                    "${itemList[index]['vote_average']} "
+                                    "${itemList[index]['vote_average']??"--"}"
                                     , // Text content
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -139,7 +144,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                                     size: 20.0,
                                   ),
                                   Text(
-                                    "  |   ${itemList[index]['vote_count']}"
+                                    "  |   ${itemList[index]['vote_count']??"--"}"
                                     , // Text content
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -283,6 +288,7 @@ class MoreInfoPageState extends State<MoreInfoPage> {
 
 void ShowLists(BuildContext context, String itemType, int itemIndex) {
   ListType listType;
+  bool success = false;
   showDialog(
       context: context,
       builder: (_)
@@ -296,21 +302,22 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
                   children: [
                     TextButton(
                       onPressed: () async {
-                        print("pressed");
                         listType = ListType.favorites;
-                        await AddToList(listType,itemType,itemIndex);
+                        await AddToList(context,listType, itemType, itemIndex);
                       },
                       child: const Text('Add to Favorites'),
                     ),
                       TextButton(
-                      onPressed: (){
-                        print("pressed");
+                      onPressed: () async {
+                        listType = ListType.watched;
+                        await AddToList(context,listType, itemType, itemIndex);
                       },
                       child: const Text('Add to Watched'),
                     ),
                     TextButton(
-                      onPressed: (){
-                        print("pressed");
+                      onPressed: () async {
+                        listType = ListType.planToWatch;
+                        await AddToList(context,listType, itemType, itemIndex);
                       },
                       child: const Text('Add to plan to Watched'),
                     ),
@@ -331,38 +338,82 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
 }
 
 
-Future<void> AddToList(ListType listType, String itemType, int itemIndex) async {
+Future<void> AddToList(BuildContext context, ListType listType, String itemType, int itemIndex) async {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final ref = FirebaseDatabase.instance.ref();
+  String userId = auth.currentUser!.uid;
+  final ref = FirebaseDatabase.instance.ref('users/$userId/lists/$itemType/${listType.toString().split('.').last}');
 
-  print(itemType.toString());
-  print(listType.toString());
-  print(itemIndex);
+// Check if the index exists
+  final snapshotOfIndex = await ref.child('/$itemIndex').get();
+  if (snapshotOfIndex.exists) {
+    // call the modal for already exists
+    ExistsInTheList(context);
+  } else {
+    await ref.child('/$itemIndex').set(true).then((_){
+      // call the modal for add successfully
+      addedToTheListSuccessfully(context);
+    });
+  }
 
-
-  Map <String, dynamic> userData = {
-    itemType.toString():{
-      listType.toString():{
-        "id": itemIndex
-      }
-    }
-  };
-
-  // await ref.child('users/${auth.currentUser!.uid}/lists').update(userData);
-
-  //
-  // // check if the list exists
-  // final snapshot =
-  // await ref.child('users/${auth.currentUser!.uid}/lists/${itemType.toString()}/${listType.toString()}').get();
-  // if (!snapshot.exists) {
-  //
-  //   print ("not ");
-  //   // construct the list because does not exists
-  //
-  //
-  //   //
-  //   // await ref.child('users/${auth.currentUser?.uid}').update(userData);
-  //
-  //
-  // }
 }
+
+
+
+
+
+void addedToTheListSuccessfully(BuildContext context) {
+  ListType listType;
+  showDialog(
+      context: context,
+      builder: (_)
+      {
+        return AlertDialog(
+          title: const Text('Added to the lis'),
+          content:
+          Container(
+            child: Text(
+              "The item added to the list successfully"
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: Navigator
+                  .of(context)
+                  .pop,
+              child: const Text('OK'),
+            )
+          ],
+        );
+      }
+  );
+}
+
+
+
+void ExistsInTheList(BuildContext context) {
+  ListType listType;
+  showDialog(
+      context: context,
+      builder: (_)
+      {
+        return AlertDialog(
+          title: const Text('Already exists'),
+          content:
+          Container(
+            child: Text(
+                "The item already exists to the list"
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: Navigator
+                  .of(context)
+                  .pop,
+              child: const Text('OK'),
+            )
+          ],
+        );
+      }
+  );
+}
+

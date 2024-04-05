@@ -305,21 +305,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                                       // map the user data
                                                       Map <String, dynamic> userData = {
                                                         auth.currentUser!.uid: {
-                                                          "name": _name,
-                                                          // "lists": {
-                                                          //   "movies": {
-                                                          //     "favorites": <int>[
-                                                          //       1
-                                                          //     ],
-                                                          //     "watched": <int>[],
-                                                          //     "planToWatch": <int>[],
-                                                          //   },
-                                                          //   "tv": {
-                                                          //     "favorites": <int>[],
-                                                          //     "watched": <int>[],
-                                                          //     "planToWatch": <int>[],
-                                                          //   },
-                                                          // },
+                                                          "name": _name
                                                         }
                                                       };
 
