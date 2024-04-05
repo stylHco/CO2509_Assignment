@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:battery/battery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +21,8 @@ import 'package:provider/provider.dart';
 
 
 Future<void> main() async {
+
+  // initilize the app with the firebase
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
@@ -29,9 +32,11 @@ Future<void> main() async {
     print("Error initializing Firebase: $e");
   }
 
-
   runApp(const MyApp());
 }
+
+
+
 
 
 Future<bool> checkInternetConnection(BuildContext context) async {
@@ -69,6 +74,62 @@ void buildAlert(BuildContext context) {
 }
 
 
+Future<bool> checkButtery(BuildContext context) async {
+  // on opening of the app check the buttery and shows a dialog if is < 30%
+  var _battery = Battery();
+
+  print("heere");
+  int butterLevel = await _battery.batteryLevel;
+
+  if (butterLevel < 30){
+    AllertForButtery(context);
+  }
+
+  return true;
+}
+
+
+void AllertForButtery(BuildContext context) {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  Firebase.initializeApp().then((_) {
+    // Show the alert
+    showDialog(
+      context: context, // Use a predefined context or pass it as an argument
+      builder: (_) => AlertDialog(
+        title:  Text(
+            'Low Battery Alert',
+          style: TextStyle(
+            color: Theme.of(context).primaryColorDark
+          ),
+        ),
+        content:  Text(
+            'Your battery level is below 30%. Consider using dark mode',
+          style: TextStyle(
+              color: Theme.of(context).primaryColorDark
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed:Navigator
+                .of(context)
+                .pop,
+            child:  Text(
+                'OK',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColorDark
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  });
+}
+
+
+
 class ThemeProvider extends ChangeNotifier {
   late ThemeData _selectedTheme;
   final SharedPreferences _prefs;
@@ -93,6 +154,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // shared preferences to store locally the decision of the theme
     return FutureBuilder<SharedPreferences>(
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
@@ -125,6 +187,7 @@ class MainApplication extends StatefulWidget {
 }
 
 class _MainApplicationState extends State<MainApplication> {
+  bool butteryChecked = false;
   int _selectedIndex = 0;
   final List<Widget> _pages = [
     HomePage(),
@@ -148,7 +211,13 @@ class _MainApplicationState extends State<MainApplication> {
 
   @override
   Widget build(BuildContext context) {
+    // check the connection constantly
     checkInternetConnection(context);
+    // make sure that only going to check the buttery once.
+    if(!butteryChecked){
+      checkButtery(context);
+      butteryChecked = true;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('MOVIES-LIST'),
@@ -165,6 +234,7 @@ class _MainApplicationState extends State<MainApplication> {
         selectedFontSize: 14,
         unselectedFontSize: 12,
         type: BottomNavigationBarType.fixed,
+        // bottom navigation items for each page
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -202,11 +272,11 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // If the snapshot has user data, then they are logged in
+        // If the snapshot has user data, then is logged in
         if (snapshot.hasData) {
-          return  MainApplication(); // Your main page widget
+          return  MainApplication(); // main application
         } else {
-          return InitialPage(); // Your login page widget
+          return InitialPage(); // login page
         }
       },
     );
@@ -244,6 +314,8 @@ final lightTheme = ThemeData.light().copyWith(
         ),
     )
 );
+
+// dark theme data
 
 final darkTheme = ThemeData.dark().copyWith(
     primaryColor: Colors.yellow,

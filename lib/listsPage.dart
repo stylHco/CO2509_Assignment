@@ -7,6 +7,9 @@ import 'homePage.dart';
 import 'listContentPage.dart';
 
 
+//this page is to initialize all the available lists
+
+
 class ListsPage extends StatefulWidget {
   const ListsPage({super.key});
   @override
@@ -30,6 +33,7 @@ class ListsPageState extends State<ListsPage>{
     super.initState();
   }
 
+  // get data from api
   void getData(List list, String url) async {
     try {
       final List fetchedData = await ApiService.fetchListOfData(url);
@@ -74,11 +78,13 @@ class ListsPageState extends State<ListsPage>{
                     ExpansionTile(
                       title: Text(
                         "MOVIES",
+                        // adding style from the themes
                         style: Theme.of(context).textTheme.bodyText1,
 
                       ),
                       trailing: Icon(
                         Icons.chevron_right_rounded,
+                        // use the colors from the theme
                         color: Theme.of(context).primaryColorLight,
                       ),
 
@@ -171,6 +177,8 @@ class ListsPageState extends State<ListsPage>{
                               onPressed: () {
                                 Navigator.push(
                                   context,
+                                  // navigate to the list content page
+                                  // to display the contents
                                   MaterialPageRoute(builder: (context) =>  ListContent(inputItemType: 'tv',inputListType: ListType.watched ,)),
                                 );
                               },

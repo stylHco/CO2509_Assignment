@@ -6,6 +6,8 @@ import 'constands.dart';
 import 'moreInfoPage.dart';
 
 
+// this page is very similar with the movies page and the peruse
+// is to search and display tv series
 class TvSeriesPage extends StatefulWidget {
   const TvSeriesPage({Key? key}) : super(key: key);
 

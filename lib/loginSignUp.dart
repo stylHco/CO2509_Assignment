@@ -209,7 +209,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                           decoration: InputDecoration(
                                             labelText: 'Email',
                                             labelStyle: TextStyle(
-                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                                color: Theme.of(context).primaryColorDark
                                             ),
                                           ),
                                           validator: (value) {
@@ -231,7 +231,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                           decoration: InputDecoration(
                                             labelText: 'Name',
                                             labelStyle: TextStyle(
-                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                                color: Theme.of(context).primaryColorDark
                                             ),
                                           ),
                                           validator: (value) {
@@ -250,10 +250,12 @@ class _SignUpFormState extends State<SignUpForm> {
                                               color: Theme.of(context).primaryColorDark
                                           ),
                                           obscureText: true,
+                                          // to make some animation for the input
+                                          // fields
                                           decoration: InputDecoration(
                                             labelText: 'Password',
                                             labelStyle: TextStyle(
-                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                                color: Theme.of(context).primaryColorDark
                                             ),
                                           ),
                                           validator: (value) {
@@ -275,7 +277,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                           decoration: InputDecoration(
                                             labelText: 'Repeat Password',
                                             labelStyle: TextStyle(
-                                                color: Theme.of(context).primaryColorDark // Choose your desired color
+                                                color: Theme.of(context).primaryColorDark
                                             ),
                                           ),
                                           validator: (value) {
@@ -364,6 +366,9 @@ class _SignUpFormState extends State<SignUpForm> {
                                                         }
                                                       };
 
+                                                      // then makes sure that waits the await function
+                                                      // and only after continues with the rest
+
                                                       await ref.update(userData).then((_){
 
                                                         if (!mounted) return;
@@ -406,6 +411,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                                       });
 
 
+                                                      // catch any error that may accuse
                                                     } catch (error) {
                                                       showDialog(
                                                         context: context,
@@ -539,7 +545,7 @@ class _LoginFormState extends State<LoginForm> {
                                 decoration:  InputDecoration(
                                   labelText: 'Email',
                                   labelStyle: TextStyle(
-                                    color: Theme.of(context).primaryColorDark // Choose your desired color
+                                    color: Theme.of(context).primaryColorDark
                                   ),
 
                                 ),
@@ -562,10 +568,10 @@ class _LoginFormState extends State<LoginForm> {
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   labelStyle: TextStyle(
-                                      color: Theme.of(context).primaryColorDark // Choose your desired color
+                                      color: Theme.of(context).primaryColorDark
                                   ),
                                   hintStyle: TextStyle(
-                                      color: Theme.of(context).primaryColorDark // Choose your desired color
+                                      color: Theme.of(context).primaryColorDark
                                   ),
                                 ),
                                 validator: (value) {
@@ -593,6 +599,7 @@ class _LoginFormState extends State<LoginForm> {
                                               RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(50.0),
                                                   side: BorderSide(color: Colors.red)
+
                                               )
                                           ), backgroundColor: MaterialStatePropertyAll<Color>(Colors.teal)
                                       ),
@@ -624,6 +631,7 @@ class _LoginFormState extends State<LoginForm> {
                                             });
 
 
+                                            // prints if eny error occurs
                                           } catch (error) {
                                             showDialog(
                                               context: context,

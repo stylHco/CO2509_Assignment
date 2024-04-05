@@ -8,11 +8,17 @@ import 'apiServices.dart';
 import 'constands.dart';
 import 'moreInfoPage.dart';
 
+// this page is the content of the lists. each list (favorites, watched...)
+// calls this page to represent its data.
 
 
 class ListContent extends StatefulWidget {
   ListContent({super.key, required this.inputListType, required this.inputItemType});
+  // item type means movie or tv
+
   late String inputItemType;
+
+  // list type is each list favorite watched and plan to watch
   ListType inputListType;
   @override
   State<StatefulWidget> createState() {
@@ -40,6 +46,7 @@ class ListContentState extends State<ListContent> {
   }
 
 
+  // fill the list from the api
   Future<void> getItem(List list, String url) async {
     try {
       final List fetchedData = await ApiService.fetchListOfData(url);
@@ -55,6 +62,9 @@ class ListContentState extends State<ListContent> {
   }
 
 
+
+  // get all the id of the items for that list (e.g. movie and favorites ) for
+  // a specific user from the firebase.
    Future<List<int>> getIDs() async {
      List<int> numbersList = [];
      final FirebaseAuth auth = FirebaseAuth.instance;
@@ -74,6 +84,9 @@ class ListContentState extends State<ListContent> {
    }
 
 
+   // this function is to say simulate the process of fetching
+  // the data loading fetching and stop loading. so we know when
+  // to display the loading animation
 
   Future<void> progressOfFetchData() async{
 
@@ -108,6 +121,7 @@ class ListContentState extends State<ListContent> {
   }
 
 
+// this function removes item from the firebase and then calls the list again
 
   Future<void> removeItem(int id,BuildContext context) async {
     List<int> numbersList = [];
@@ -120,12 +134,14 @@ class ListContentState extends State<ListContent> {
 
     try{
       await ref.remove();
+      // call again the firebase so update the ui
       await progressOfFetchData();
     }catch(e){
       showDialog(
           context: context,
           builder: (_)
           {
+            // modal if somethig is wrong
             return AlertDialog(
               title: const Text('Cannot Remove The Item'),
               content:
@@ -149,7 +165,7 @@ class ListContentState extends State<ListContent> {
 
   }
 
-
+  // call back function
   void removeItemFromList(int id) {
     removeItem(id, context);
   }
@@ -180,9 +196,11 @@ class ListContentState extends State<ListContent> {
               ),
             ),
             const SizedBox(height: 25),
+            // still fetching data so show load
             if (dataIsLoading)
               Center(child: CircularProgressIndicator())
 
+              // the api fetched nothing
             else if (!dataIsLoading && allItemList.isEmpty)
               Center(child: Text(
                 "You have no items in the list",
@@ -191,6 +209,8 @@ class ListContentState extends State<ListContent> {
                     fontWeight: FontWeight.w500
                 ),
               ))
+
+              // the data in a flexible
             else
             Flexible(
               child: MoviesList(allItemList: allItemList,itemType: itemType, removeItemCallback: removeItemFromList,),
@@ -204,6 +224,8 @@ class ListContentState extends State<ListContent> {
 
 }
 
+
+// put all the data in the list format
 
 class MoviesList extends StatelessWidget {
   final List<List> allItemList;
@@ -321,6 +343,9 @@ class MoviesList extends StatelessWidget {
                               Padding(
                               padding: EdgeInsets.only(left: 25.0),
                               child: Text(
+                                // because movies has names and tv has title check if any of
+                                // those exists and prints it and if both of them are null
+                                // then means there is not title
                                 "${item['name'] ?? item['title'] ?? 'Title not found'}  ${item['first_air_date'] != null ? DateTime.parse(item['first_air_date']).year : ''}",
                                 textAlign: TextAlign.left,
                                 style:  TextStyle(

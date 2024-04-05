@@ -11,7 +11,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'moreInfoPage.dart';
 
-
+// homepage
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage>{
 
+  // initialize the lists  before i use it
   late List playingNowTVSeries = [];
 
   late List playingNowTVSeriesImg = [];
@@ -37,6 +38,7 @@ class HomePageState extends State<HomePage>{
 
   @override
   void initState() {
+    // initialize all the list of items from the database using the links from the constands file
     super.initState();
     getData(playingNowTVSeries, playingNowTVSeriesURL);
     getData(playingNowMovies, playingNowMoviesURL);
@@ -63,6 +65,8 @@ class HomePageState extends State<HomePage>{
 
 
 
+  // build the home page state widget
+
   @override
   Widget build(BuildContext context) {
 
@@ -75,29 +79,28 @@ class HomePageState extends State<HomePage>{
                     title:"TV SERIES"
                   ),
                   CarouselTile(title: 'Playing Now TV Series', list: playingNowTVSeries, listType: 'tv',),
+                  const SizedBox(height: 15,),
                   CarouselTile(title: 'Popular TV Series', list: popularTVSeries, listType: 'tv',),
+                  const SizedBox(height: 15,),
                   CarouselTile(title: 'Top Rated TV Series', list: topRatedTVSeries, listType: 'tv',),
                   const SizedBox(height: 25,),
                   BoxTitles(
                     title:"MOVIES"
                   ),
                   CarouselTile(title: 'Playing Now Movies', list: playingNowMovies, listType: 'movie',),
+                  const SizedBox(height: 15,),
                   CarouselTile(title: 'Top Rated Movies', list: topRatedMovies, listType: 'movie',),
+                  const SizedBox(height: 15,),
                   CarouselTile(title: 'Upcoming Movies', list: upcomingMovies, listType: 'movie',),
                   const SizedBox(height: 25,),
                 ],
               ),
       ),
-        // backgroundColor: Colors.teal[100]
     );
   }
 
 }
-
-
-
-
-
+// custom box title configuration for the titles
 class BoxTitles extends StatelessWidget {
   final String title;
 
@@ -122,6 +125,7 @@ class BoxTitles extends StatelessWidget {
   }
 }
 
+// carousel configurations
 class CarouselHomePage extends StatelessWidget {
   CarouselController buttonCarouselController = CarouselController();
 
@@ -136,6 +140,7 @@ class CarouselHomePage extends StatelessWidget {
     children: <Widget>[
       CarouselSlider(
         items: itemList.map((item) {
+          // make the  items into a list
           return Builder(
             builder: (BuildContext context) {
               return Container(
@@ -275,7 +280,11 @@ class CarouselHomePage extends StatelessWidget {
         carouselController: buttonCarouselController,
         options: CarouselOptions(
           autoPlay: false,
+          // this is an effect to make the the center image bigger
+          // emphasise to the center image but i disabled
+          // it because cause some problems
           enlargeCenterPage: false,
+
           aspectRatio: 2.0,
           initialPage: 0,
           height: 200,
@@ -314,6 +323,7 @@ class CarouselTile extends StatelessWidget {
             ),
           ),
         ),
+
         // return loadable icon if the list is empty
         if (list.isEmpty)
           Center(child: CircularProgressIndicator())

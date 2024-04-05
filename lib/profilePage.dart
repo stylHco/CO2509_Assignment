@@ -232,6 +232,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
+
+// logout procedure
 Future<void> logout() async {
 
   // remove the stored preferences from the device when the user logout
@@ -241,6 +243,8 @@ Future<void> logout() async {
 
   await FirebaseAuth.instance.signOut();
 }
+
+// get the name of the use based on the user that is logged in
 
 Future<String> GetUserName() async {
   final FirebaseAuth auth = FirebaseAuth.instance;

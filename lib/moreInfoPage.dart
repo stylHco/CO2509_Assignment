@@ -11,6 +11,8 @@ import 'constands.dart';
 
 
 
+// this page is to display more info of a specific movie or tv show.
+
 
 class MoreInfoPage extends StatefulWidget {
   MoreInfoPage({super.key, required this.inputId, required this.inputType});
@@ -27,6 +29,7 @@ class MoreInfoPage extends StatefulWidget {
 class MoreInfoPageState extends State<MoreInfoPage> {
 
   MoreInfoPageState({required this.id, required this.type});
+  // initialise the movie or show id and the type
   late int id;
   late String type;
 
@@ -110,7 +113,8 @@ class MoreInfoPageState extends State<MoreInfoPage> {
                             ),
                           ),
                           // a tint to the bottom half of the image to make the text visible
-                          // for the linear gradient i used this website https://api.flutter.dev/flutter/painting/LinearGradient-class.html
+                          // for the linear gradient i used this
+                          // website https://api.flutter.dev/flutter/painting/LinearGradient-class.html
                           Positioned.fill(
                               bottom: 0.0,
                               child: Container(
@@ -371,6 +375,7 @@ void ShowLists(BuildContext context, String itemType, int itemIndex) {
 Future<void> AddToList(BuildContext context, ListType listType, String itemType, int itemIndex) async {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String userId = auth.currentUser!.uid;
+  // users/$userId/lists/$itemType/${listType.toString().split('.').last full path to the item
   final ref = FirebaseDatabase.instance.ref('users/$userId/lists/$itemType/${listType.toString().split('.').last}');
 
 // Check if the index exists
